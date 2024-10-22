@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Touch Counter</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #counter-text {
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        #current-date {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+        #count {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        #previous-count-text {
+            font-size: 14px;
+            margin-top: 15px;
+            color: #666;
+        }
+        #previous-count {
+            font-size: 18px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .main-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            transition: background-color 0.3s;
+            margin-bottom: 15px;
+        }
+        .main-button:hover {
+            background-color: #45a049;
+        }
+        .reset-button {
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .reset-button:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <div id="counter-text">Touches for Today!</div>
+    <div id="current-date"></div>
+    <div id="count">0</div>
+    <button class="main-button" onclick="incrementCount()">Click me!</button>
+    <button class="reset-button" onclick="resetCount()">Reset</button>
+    <div id="previous-count-text">Previous Counter</div>
+    <div id="previous-count">0</div>
+
+    <script>
+        let count = 0;
+        let previousCount = 0;
+        let lastDate = '';
+
+        // Function to format the date
+        function formatDate() {
+            const date = new Date();
+            const options = { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+            };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        // Load saved data when page loads
+        function loadSavedData() {
+            const currentDate = formatDate();
+            const savedDate = localStorage.getItem('lastDate');
+            
+            // If it's a new day, reset the count
+            if (savedDate !== currentDate) {
+                count = 0;
+                previousCount = parseInt(localStorage.getItem('count') || 0);
+                localStorage.setItem('lastDate', currentDate);
+            } else {
+                count = parseInt(localStorage.getItem('count') || 0);
+                previousCount = parseInt(localStorage.getItem('previousCount') || 0);
+            }
+
+            // Update display
+            document.getElementById('count').textContent = count;
+            document.getElementById('previous-count').textContent = previousCount;
+            document.getElementById('current-date').textContent = currentDate;
+        }
+
+        function incrementCount() {
+            count++;
+            document.getElementById('count').textContent = count;
+            // Save to localStorage
+            localStorage.setItem('count', count);
+            localStorage.setItem('previousCount', previousCount);
+        }
+
+        function resetCount() {
+            previousCount = count;
+            count = 0;
+            document.getElementById('count').textContent = count;
+            document.getElementById('previous-count').textContent = previousCount;
+            // Save to localStorage
+            localStorage.setItem('count', count);
+            localStorage.setItem('previousCount', previousCount);
+        }
+
+        // Load saved data when page loads
+        loadSavedData();
+    </script>
+</body>
+</html>
